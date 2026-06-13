@@ -51,6 +51,26 @@ contenedor backend:
 docker compose exec backend python -m app.publish_sample
 ```
 
+Para simular una pequeña flota de nodos de borde de forma continua, usa el
+compose adicional:
+
+```bash
+docker compose -f docker-compose.yml -f docker-compose.simulator.yml up --build
+```
+
+El servicio `edge-simulator` publica telemetría MQTT periódica con patrones
+temporales deterministas: ciclos senoidales diarios para temperatura, humedad y
+presión, ruido gaussiano, evolución gradual del estado energético, variaciones
+en la calidad del enlace LoRa y aparición ocasional de anomalías.
+
+Puedes ajustar el comportamiento desde `docker-compose.simulator.yml`:
+
+- `SIM_NODE_COUNT`: número de nodos simulados.
+- `SIM_INTERVAL_SECONDS`: intervalo real entre publicaciones.
+- `SIM_SEED`: semilla para obtener datos reproducibles.
+- `SIM_TIME_ACCELERATION`: aceleración del tiempo simulado.
+- `SIM_ANOMALY_RATE`: probabilidad de anomalía por muestra.
+
 También puedes enviar un único mensaje con `mosquitto_pub` si lo tienes
 instalado localmente:
 

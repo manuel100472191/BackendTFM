@@ -1,0 +1,19 @@
+services:
+  edge-simulator:
+    build:
+      context: ./backend
+    container_name: tfm-edge-simulator
+    restart: unless-stopped
+    depends_on:
+      mqtt:
+        condition: service_started
+    environment:
+      MQTT_HOST: mqtt
+      MQTT_PORT: 1883
+      SIM_GATEWAY_ID: gw-01
+      SIM_NODE_COUNT: 3
+      SIM_INTERVAL_SECONDS: 5
+      SIM_SEED: 42
+      SIM_TIME_ACCELERATION: 60
+      SIM_ANOMALY_RATE: 0.03
+    command: ["python", "-m", "app.simulate_edge_nodes"]
