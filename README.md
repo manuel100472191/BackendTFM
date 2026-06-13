@@ -19,6 +19,27 @@ El entorno Docker levanta cuatro servicios:
 - `grafana`: dashboard provisionado automáticamente para consultar estado actual
   e histórico del nodo.
 
+### Vista General
+
+![Vista general de la arquitectura backend](docs/backend-architecture.svg)
+
+Fuente PlantUML:
+[`docs/backend-architecture.puml`](docs/backend-architecture.puml).
+
+### Componentes Internos Del Backend
+
+![Componentes internos del servicio backend](docs/backend-internals.svg)
+
+Fuente PlantUML:
+[`docs/backend-internals.puml`](docs/backend-internals.puml).
+
+### Flujo De Telemetría
+
+![Flujo de datos de telemetría](docs/backend-data-flow.svg)
+
+Fuente PlantUML:
+[`docs/backend-data-flow.puml`](docs/backend-data-flow.puml).
+
 ## Puesta En Marcha
 
 1. Copia el fichero de entorno:

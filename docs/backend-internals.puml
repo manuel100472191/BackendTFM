@@ -1,0 +1,32 @@
+@startuml BackendTFM_Backend_Internals
+title BackendTFM - Backend Ingestion Service Internals
+
+skinparam componentStyle rectangle
+skinparam shadowing false
+skinparam defaultTextAlignment center
+skinparam packageStyle rectangle
+
+package "Python Backend Container" {
+  component "Settings\napp.config" as settings
+  component "MQTT Client\napp.main" as mqtt_client
+  component "Parser & Validator\napp.validation" as validator
+  component "Influx Writer\napp.influx_writer" as writer
+  component "Health Server\napp.health" as health
+}
+
+queue "Mosquitto\nMQTT Broker" as mqtt
+database "InfluxDB" as influx
+
+settings --> mqtt_client : broker host,\nport, topic
+settings --> writer : InfluxDB URL,\ntoken, org, bucket
+settings --> health : HTTP port
+
+mqtt --> mqtt_client : raw JSON payload
+mqtt_client --> validator : parse_telemetry()
+validator --> mqtt_client : Telemetry\nor ValidationError
+mqtt_client --> writer : valid telemetry
+mqtt_client --> writer : error event
+writer --> influx : node_telemetry\nbackend_events
+health --> writer : ready()
+
+@enduml

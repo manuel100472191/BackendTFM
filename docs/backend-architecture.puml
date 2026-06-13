@@ -1,0 +1,26 @@
+@startuml BackendTFM_Backend_Architecture
+title BackendTFM - High-Level Backend Architecture
+
+skinparam componentStyle rectangle
+skinparam shadowing false
+skinparam defaultTextAlignment center
+skinparam packageStyle rectangle
+
+actor "Edge Node\nor Simulator" as edge
+actor "Developer / Operator" as operator
+
+node "Docker Compose" {
+  component "Mosquitto\nMQTT Broker\n:1883" as mqtt
+  component "Python Backend\nIngestion Service\n:8000" as backend
+  database "InfluxDB\nTime-Series Storage\n:8086" as influx
+  component "Grafana\nMonitoring Dashboard\n:3000" as grafana
+}
+
+edge --> mqtt : publishes telemetry
+mqtt --> backend : MQTT messages
+backend --> influx : stores telemetry\nand backend events
+grafana --> influx : queries metrics
+operator --> backend : health/readiness checks
+operator --> grafana : views dashboards
+
+@enduml

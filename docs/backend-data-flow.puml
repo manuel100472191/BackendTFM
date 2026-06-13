@@ -1,0 +1,28 @@
+@startuml BackendTFM_Backend_Data_Flow
+title BackendTFM - Telemetry Data Flow
+
+skinparam shadowing false
+skinparam defaultTextAlignment center
+
+start
+:Edge node or simulator\ncreates telemetry payload;
+:Publish JSON to MQTT topic\ntfm/gateway/{gateway_id}/telemetry;
+:Backend receives MQTT message;
+
+if (Valid JSON object?) then (yes)
+  :Parse and validate telemetry;
+  if (Telemetry is valid?) then (yes)
+    :Normalize timestamp, fields,\nand tags;
+    :Write node_telemetry\nto InfluxDB;
+  else (no)
+    :Write validation_error\nto backend events;
+  endif
+else (no)
+  :Write invalid_json\nto backend events;
+endif
+
+:Grafana queries InfluxDB;
+:Dashboard shows latest state,\nhistory, and backend events;
+stop
+
+@enduml
